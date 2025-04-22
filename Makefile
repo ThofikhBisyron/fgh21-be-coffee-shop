@@ -1,7 +1,7 @@
-host ?= 3.25.204.209
+host ?= 172.17.0.2
 port ?= 5432
 user ?= postgres
-pass ?= 123
+pass ?= 1
 db ?= konis_caffee
 
 migrate\:init:
