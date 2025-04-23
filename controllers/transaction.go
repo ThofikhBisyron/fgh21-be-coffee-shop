@@ -94,36 +94,44 @@ func CreateTransactionDetails(c *gin.Context) {
 func CreateTransaction(c *gin.Context) {
 	var formTransaction dtos.FormTransaction
 	err := c.Bind(&formTransaction)
-	userId := c.GetInt("UserId")
-	fmt.Println(err)
 	if err != nil {
-		lib.HandlerBadReq(c, "Invalid")
+		lib.HandlerBadReq(c, "Invalid data")
 		return
 	}
-	fmt.Println(userId)
+
+	userId := c.GetInt("UserId")
 	noOrder := rand.Intn(90000) + 10000
-	for i := range formTransaction.TransactionDetail {
-		repository.CreateTransaction(models.Transaction{
+	var createdTransactions []models.Transaction
+
+	for _, detailId := range formTransaction.TransactionDetail {
+		transaction := models.Transaction{
 			NoOrder:             noOrder,
 			AddFullName:         formTransaction.FullName,
 			AddEmail:            formTransaction.Email,
 			AddAddress:          formTransaction.Address,
 			Payment:             formTransaction.Payment,
 			UserId:              userId,
-			TransactionDetail:   formTransaction.TransactionDetail[i],
+			TransactionDetail:   detailId,
 			OrderTypeId:         formTransaction.OrderType,
 			TransactionStatusId: formTransaction.TransactionStatus,
-		})
+		}
+
+		fmt.Println("Saving transaction:", transaction)
+
+		created, err := repository.CreateTransaction(transaction)
+		if err != nil {
+			fmt.Println("Error saat insert transaction:", err)
+			lib.HandlerBadReq(c, "Gagal membuat transaksi")
+			return
+		}
+
+		fmt.Println("Created transaction:", created)
+		createdTransactions = append(createdTransactions, created)
 	}
-	fmt.Println(err)
-	// if err != nil {
-	// 	lib.HandlerBadReq(c, "Invalid Data")
-	// 	return
-	// }
 
-	lib.HandlerOK(c, "transaction success", nil, nil)
+	fmt.Println("Created transactions:", createdTransactions)
+	lib.HandlerOK(c, "Transaction success", createdTransactions, nil)
 }
-
 
 func GetALLTransactions(c *gin.Context) {
 	search := c.Query("search")
@@ -242,9 +250,9 @@ func UpdateTransactionStatus(c *gin.Context) {
 	}
 	update, err := repository.EditTransactionStatus(models.Transaction{
 		TransactionStatusId: form.TransactionStatus,
-		}, noOrder)
-		
-		if err != nil {
+	}, noOrder)
+
+	if err != nil {
 		fmt.Println(err)
 		lib.HandlerBadReq(c, "Required to input data")
 		return

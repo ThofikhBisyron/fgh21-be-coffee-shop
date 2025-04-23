@@ -15,10 +15,14 @@ func CreateTransaction(data models.Transaction) (models.Transaction, error) {
 	defer db.Close(context.Background())
 	fmt.Println(data)
 	sql := `
-		INSERT INTO transactions (no_order, add_full_name, add_email,
-		add_address, payment, user_id, transaction_detail_id,
-		order_type_id, transaction_status_id) VALUES 
-		($1, $2, $3, $4, $5, $6,$7, $8, $9) RETURNING *
+		INSERT INTO transactions (
+	no_order, add_full_name, add_email, add_address, payment, user_id,
+	transaction_detail_id, order_type_id, transaction_status_id
+) VALUES (
+	$1, $2, $3, $4, $5, $6, $7, $8, $9
+) RETURNING 
+	id, no_order, add_full_name, add_email, add_address, payment, user_id,
+	transaction_detail_id, order_type_id, transaction_status_id
 	`
 
 	row, err := db.Query(context.Background(), sql, data.NoOrder, data.AddFullName, data.AddEmail, data.AddAddress, data.Payment, data.UserId, data.TransactionDetail, data.OrderTypeId, data.TransactionStatusId)
@@ -35,7 +39,6 @@ func CreateTransaction(data models.Transaction) (models.Transaction, error) {
 
 	return transaction, err
 }
-
 
 func FindAllTransactions(search string, page int, limit int) ([]models.AllTransactionForAdmin, int) {
 	db := lib.DB()
@@ -162,8 +165,8 @@ func DeleteTransaction(id int) (models.AllTransactionForAdmin, error) {
 
 	if query.RowsAffected() == 0 {
 		return models.AllTransactionForAdmin{}, err
-  }
- return result , err
+	}
+	return result, err
 }
 
 func EditTransactionStatus(data models.Transaction, id int) (models.Transaction, error) {
@@ -172,14 +175,14 @@ func EditTransactionStatus(data models.Transaction, id int) (models.Transaction,
 
 	sql := `UPDATE transactions SET "transaction_status_id"=$1 WHERE no_order=$2 returning id,transaction_status_id`
 
-	query := db.QueryRow(context.Background(), sql, data.TransactionStatusId ,id)
-	
+	query := db.QueryRow(context.Background(), sql, data.TransactionStatusId, id)
+
 	var result models.Transaction
 	err := query.Scan(
 		&result.Id,
 		&result.TransactionStatusId,
 	)
-	
+
 	if err != nil {
 		log.Println(err)
 		return models.Transaction{}, err

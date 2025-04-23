@@ -46,49 +46,48 @@ func CreateCarts(data models.Carts) (models.Carts, error) {
 	db := lib.DB()
 	defer db.Close(context.Background())
 
-	fmt.Println(data)
-	// fmt.Println(userId)
+	ctx := context.Background()
 
-	sql := `INSERT INTO carts ("transaction_detail_id", "quantity", "variant_id", "sizes_id", "product_id", "user_id") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id", "transaction_detail_id", "quantity", "variant_id", "sizes_id", "product_id", "user_id"`
+	sqlTx := `
+		INSERT INTO transaction_details ("quantity", "product_id", "variant_id", "product_size_id")
+		VALUES ($1, $2, $3, $4)
+		RETURNING id
+	`
 
-	// sql := `insert into carts "quantity" values $1 returning "id", "quantity", "variant_id", "sizes_id", "product_id", "user_id"`
-
-	row, _ := db.Query(context.Background(), sql, data.TransactionDetail, data.Quantity, data.VariantId, data.ProductSizeId, data.ProductId, data.UserId)
-	results, err := pgx.CollectOneRow(row, pgx.RowToStructByPos[models.Carts])
+	var transactionDetailId int
+	err := db.QueryRow(ctx, sqlTx, data.Quantity, data.ProductId, data.VariantId, data.ProductSizeId).Scan(&transactionDetailId)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Failed insert transaction_details:", err)
+		return models.Carts{}, err
 	}
-	// row, err := db.Query(context.Background(), sql, data.Quantity)
 
-	// if err != nil {
-	// 	return models.Carts{}, nil
-	// }
+	sqlCart := `
+		INSERT INTO carts ("transaction_detail_id", "quantity", "variant_id", "sizes_id", "product_id", "user_id")
+		VALUES ($1, $2, $3, $4, $5, $6)
+		RETURNING "id", "transaction_detail_id", "quantity", "variant_id", "sizes_id", "product_id", "user_id"
+	`
 
-	// if err != nil {
-	// 	return models.Carts{}, nil
-	// }
+	row, err := db.Query(ctx, sqlCart,
+		transactionDetailId,
+		data.Quantity,
+		data.VariantId,
+		data.ProductSizeId,
+		data.ProductId,
+		data.UserId,
+	)
+	if err != nil {
+		fmt.Println("Gagal insert carts:", err)
+		return models.Carts{}, err
+	}
 
-	// var results models.Carts
+	cart, err := pgx.CollectOneRow(row, pgx.RowToStructByPos[models.Carts])
+	if err != nil {
+		fmt.Println("Gagal collect carts:", err)
+		return models.Carts{}, err
+	}
 
-	// Id           int `json:"id"`
-	// Quantity     int `json:"quantity"`
-	// VariantId    int `json:"variantId" db:"variant_id"`
-	// SizesProduct int `json:"sizeProduct" db:"sizes_id"`
-	// ProductId    int `json:"productId" db:"product_id"`
-	// UserId       int `json:"userId" db:"user_id"`
-
-	// row.Scan(
-	// 	&results.Id,
-	// 	&results.TransactionDetail,
-	// 	&results.Quantity,
-	// 	&results.VariantId,
-	// 	&results.ProductSizeId,
-	// 	&results.ProductId,
-	// 	&results.UserId,
-	// )
-	fmt.Println("ini results")
-	fmt.Println(results)
-	return results, nil
+	fmt.Println("Inserted cart:", cart)
+	return cart, nil
 }
 
 func GetCartsByUserId(id int) ([]models.Carts, error) {

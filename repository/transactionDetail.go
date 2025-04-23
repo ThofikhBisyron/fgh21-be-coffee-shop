@@ -132,3 +132,34 @@ func FindTransactionByUserId(id int) ([]models.TransactionJoin, error) {
 
 	return transaction, nil
 }
+
+func FindTransactionDetailByUserId(id int) ([]models.TransactionJoin, error) {
+	db := lib.DB()
+	defer db.Close(context.Background())
+
+	sql := `
+		SELECT transactions.no_order, transaction_status.name as order_type, array_agg(transaction_details.quantity) as quantity,
+		array_agg(products.price) as price, product_images.image FROM transactions
+		INNER JOIN transaction_details ON transactions.transaction_detail_id = transaction_details.id
+		INNER JOIN products ON transaction_details.id = products.id
+		INNER JOIN transaction_status ON transactions.transaction_status_id = transaction_status.id
+		INNER JOIN product_images ON  product_images.product_id  = products.id
+		WHERE transactions.user_id = $1
+    	GROUP BY transactions.no_order, transaction_status.name, product_images.image
+	`
+
+	row, err := db.Query(context.Background(), sql, id)
+
+	if err != nil {
+		log.Println(err)
+		return []models.TransactionJoin{}, err
+	}
+
+	transaction, err := pgx.CollectRows(row, pgx.RowToStructByName[models.TransactionJoin])
+
+	if err != nil {
+		return []models.TransactionJoin{}, err
+	}
+
+	return transaction, nil
+}
