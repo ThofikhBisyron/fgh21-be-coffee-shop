@@ -256,7 +256,7 @@ func DeleteProfileAndUser(id int) (models.Users, error) {
 
 	if profileImage != nil {
 
-		filePathParts := strings.Split(*profileImage, "8000")
+		filePathParts := strings.Split(*profileImage, "8888")
 		if len(filePathParts) > 1 {
 			filePath := "." + filePathParts[1]
 			err = os.Remove(filePath)

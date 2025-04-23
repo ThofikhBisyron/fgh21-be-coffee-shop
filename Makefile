@@ -1,5 +1,5 @@
-host ?= 172.17.0.2
-port ?= 5432
+host ?= 157.230.243.8
+port ?= 54321
 user ?= postgres
 pass ?= 1
 db ?= konis_caffee

@@ -142,7 +142,7 @@ func UpdateProfile(c *gin.Context) {
 	// 	lib.HandlerBadReq(c, "Failed to upload image")
 	// 	return
 	// }
-	// imageURL := "http://localhost:8000/img/profile/" + newFileName
+	// imageURL := "http://157.230.243.8:8888/img/profile/" + newFileName
 	// if form.Password == nil {
 	// 	emptyPassword := ""
 	// 	form.Password = &emptyPassword
@@ -235,11 +235,11 @@ func UploadProfileImage(c *gin.Context) {
 		return
 	}
 
-	tes := "http://localhost:8000/img/profile/" + newFile
+	tes := "http://157.230.243.8:8888/img/profile/" + newFile
 
 	delImgBefore, _ := repository.FindProfileById(id)
 	if delImgBefore.Image != nil {
-		fileDel := strings.Split(*delImgBefore.Image, "8000")[1]
+		fileDel := strings.Split(*delImgBefore.Image, "8888")[1]
 		os.Remove("." + fileDel)
 	}
 
@@ -286,11 +286,11 @@ func UploadProfileImageForAdmin(c *gin.Context) {
 		return
 	}
 
-	tes := "http://localhost:8000/img/profile/" + newFile
+	tes := "http://157.230.243.8:8888/img/profile/" + newFile
 
 	delImgBefore, _ := repository.FindProfileById(id)
 	if delImgBefore.Image != nil {
-		fileDel := strings.Split(*delImgBefore.Image, "8000")[1]
+		fileDel := strings.Split(*delImgBefore.Image, "8888")[1]
 		os.Remove("." + fileDel)
 	}
 
