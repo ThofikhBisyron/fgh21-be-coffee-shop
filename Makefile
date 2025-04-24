@@ -1,4 +1,4 @@
-host ?= 157.230.243.8
+host ?= 143.198.222.47
 port ?= 54321
 user ?= postgres
 pass ?= 1

@@ -142,7 +142,7 @@ func UpdateProfile(c *gin.Context) {
 	// 	lib.HandlerBadReq(c, "Failed to upload image")
 	// 	return
 	// }
-	// imageURL := "http://157.230.243.8:8888/img/profile/" + newFileName
+	// imageURL := "http://143.198.222.47:10003/img/profile/" + newFileName
 	// if form.Password == nil {
 	// 	emptyPassword := ""
 	// 	form.Password = &emptyPassword
@@ -235,7 +235,7 @@ func UploadProfileImage(c *gin.Context) {
 		return
 	}
 
-	tes := "http://157.230.243.8:8888/img/profile/" + newFile
+	tes := "http://143.198.222.47:10003/img/profile/" + newFile
 
 	delImgBefore, _ := repository.FindProfileById(id)
 	if delImgBefore.Image != nil {
@@ -286,7 +286,7 @@ func UploadProfileImageForAdmin(c *gin.Context) {
 		return
 	}
 
-	tes := "http://157.230.243.8:8888/img/profile/" + newFile
+	tes := "http://143.198.222.47:10003/img/profile/" + newFile
 
 	delImgBefore, _ := repository.FindProfileById(id)
 	if delImgBefore.Image != nil {
