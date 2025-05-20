@@ -278,7 +278,7 @@ func UploadProductImage(c *gin.Context) {
 			return
 		}
 
-		locationFile := "http://143.198.222.47:10003/img/product/" + file
+		locationFile := "http://35.240.184.74:10003/img/product/" + file
 		fmt.Println(locationFile)
 		dataImage, _ := repository.UploadProductImage(models.ProductImage{
 			Image:     locationFile,

@@ -163,7 +163,7 @@ func CreateUserWithProfile(c *gin.Context) {
 		return
 	}
 
-	imageURL := "http://143.198.222.47:10003/img/profile/" + newFileName
+	imageURL := "http://35.240.184.74:10003/img/profile/" + newFileName
 
 	profile, err := repository.CreateinsertProfile(models.InsertProfile{
 		FullName:    input.FullName,
