@@ -7,6 +7,7 @@ import (
 	"RGT/konis/repository"
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -277,8 +278,8 @@ func UploadProductImage(c *gin.Context) {
 			lib.HandlerBadReq(c, "upload failed")
 			return
 		}
-
-		locationFile := "http://35.240.184.74:10003/img/product/" + file
+		baseURL := os.Getenv("BASE_URL")
+		locationFile := baseURL + file
 		fmt.Println(locationFile)
 		dataImage, _ := repository.UploadProductImage(models.ProductImage{
 			Image:     locationFile,

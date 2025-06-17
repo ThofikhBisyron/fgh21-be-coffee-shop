@@ -8,8 +8,8 @@ import (
 )
 
 func DB() *pgx.Conn {
-
-	conn, err := pgx.Connect(context.Background(), "postgresql://postgres:1@35.240.184.74:54321/konis_caffee?sslmode=disable")
+	cfg := LoadConfig()
+	conn, err := pgx.Connect(context.Background(), "postgresql://"+cfg.DBUser+":"+cfg.DBPassword+"@"+cfg.DBHost+":"+cfg.DBPort+"/"+cfg.DBName+"?sslmode=disable")
 
 	if err != nil {
 		fmt.Println(err)

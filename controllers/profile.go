@@ -234,8 +234,8 @@ func UploadProfileImage(c *gin.Context) {
 		lib.HandlerBadReq(c, "upload failed")
 		return
 	}
-
-	tes := "http://35.240.184.74:10003/img/profile/" + newFile
+	baseURL := os.Getenv("BASE_URL")
+	tes := baseURL + newFile
 
 	delImgBefore, _ := repository.FindProfileById(id)
 	if delImgBefore.Image != nil {
@@ -285,8 +285,8 @@ func UploadProfileImageForAdmin(c *gin.Context) {
 		lib.HandlerBadReq(c, "upload failed")
 		return
 	}
-
-	tes := "http://35.240.184.74:10003/img/profile/" + newFile
+	baseURL := os.Getenv("BASE_URL")
+	tes := baseURL + newFile
 
 	delImgBefore, _ := repository.FindProfileById(id)
 	if delImgBefore.Image != nil {

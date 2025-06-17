@@ -5,6 +5,7 @@ import (
 	"RGT/konis/lib"
 	"RGT/konis/models"
 	"RGT/konis/repository"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -162,8 +163,8 @@ func CreateUserWithProfile(c *gin.Context) {
 		lib.HandlerBadReq(c, "Failed to create user: "+err.Error())
 		return
 	}
-
-	imageURL := "http://35.240.184.74:10003/img/profile/" + newFileName
+	baseURL := os.Getenv("BASE_URL")
+	imageURL := baseURL + newFileName
 
 	profile, err := repository.CreateinsertProfile(models.InsertProfile{
 		FullName:    input.FullName,
