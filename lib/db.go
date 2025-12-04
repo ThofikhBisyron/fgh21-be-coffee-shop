@@ -8,7 +8,7 @@ import (
 )
 
 func DB() *pgx.Conn {
-	conn, err := pgx.Connect(context.Background(), "postgresql://postgres:1@152.42.233.254:54321/konis_caffee?sslmode=disable")
+	conn, err := pgx.Connect(context.Background(), "postgresql://postgres:1@postgres:54321/konis_caffee?sslmode=disable")
 
 	if err != nil {
 		fmt.Println(err)
