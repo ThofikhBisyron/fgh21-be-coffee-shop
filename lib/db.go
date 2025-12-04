@@ -3,22 +3,15 @@ package lib
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/jackc/pgx/v5"
 )
 
 func DB() *pgx.Conn {
-	dbHost := os.Getenv("DB_HOST")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPass := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
+	conn, err := pgx.Connect(context.Background(), "postgresql://postgres:1@152.42.233.254:54321/konis_caffee?sslmode=disable")
 
-	connStr := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPass, dbHost, dbPort, dbName)
-	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil {
-		fmt.Println("DB connection error:", err)
+		fmt.Println(err)
 	}
 	return conn
 }
