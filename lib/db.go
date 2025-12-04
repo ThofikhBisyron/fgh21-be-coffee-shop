@@ -13,5 +13,6 @@ func DB() *pgx.Conn {
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println("DB connected successfully")
 	return conn
 }
