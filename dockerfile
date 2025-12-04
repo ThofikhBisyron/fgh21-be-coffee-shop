@@ -19,6 +19,9 @@ EXPOSE 8888
 
 ENTRYPOINT ["/app/backend"]
 
+# docker network create alluser
+# docker run --network alluser --env-file .env --name bekonis -d -p 10003:8888 bekonis:latest
+
 
 # Normal
 # FROM golang:1.23.0
